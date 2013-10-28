@@ -1,0 +1,22 @@
+{
+  "name": "scrub",
+  "version": "0.1.0",
+  "description": "scrub values the way you like em",
+  "homepage": "https://github.com/3meters/scrub",
+  "keywords": [ "argument", "arguments", "parameter", "parameters", "check", "checker", "schema" ],
+  "author": {
+    "name": "George Snelling",
+    "email": "george@3meters.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/3meters/scrub.git"
+  },
+  "dependencies": {
+    "tipe": "*"
+  },
+  "main": "scrub.js",
+  "scripts": { "test": "node test.js" },
+  "license": "MIT",
+  "readmeFilename": "Readme.md"
+}
