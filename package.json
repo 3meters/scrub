@@ -1,7 +1,7 @@
 {
   "name": "scrub",
   "version": "0.1.0",
-  "description": "scrub values the way you like em",
+  "description": "scrub arguments until they are clean",
   "homepage": "https://github.com/3meters/scrub",
   "keywords": [ "argument", "arguments", "parameter", "parameters", "check", "checker", "schema" ],
   "author": {

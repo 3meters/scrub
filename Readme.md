@@ -23,13 +23,13 @@ function fn(v) {
   var err = scrub(v, spec)
   if (err) return err
 
-  // I know everything I need to know about v
+  // I now know absolutely everything I need to know about v
   ...
 }
 fn(1)         // Error: 'Invalid type'
 fn('foo')     // 3
 ```
-With scrub I define all my assumptions about a value with a succint spec.  If the value fails my spec, scub crafts a detailed error explaining where things went wrong.
+With scrub I define all my assumptions about a value with a succint spec.  If the value fails my spec, scub crafts a detailed error explaining where things went wrong.  Scrub is particularly well-suited for checking data between a public api, like a web service, and a schemaless store, like mongodb.
 
 ### Scrub specs
 Scrub specs are ordinary objects that you define. Here is the bootstrap spec for a spec. The most important properties are type, value, required, and default.  Scrub recurses on the value property for nested specs, and iterates the scrub over arrays.
@@ -206,7 +206,7 @@ The top level scurb call accepts
 ```js
 scrub(val, spec, options)
 ```
-Where options is a non-strict object with following supported properties and their defaults:  
+Where options is a non-strict object with following supported properties and their defaults:
 ```js
   {
     strict: false,          // do not allow unspecified properties of objects
@@ -214,7 +214,7 @@ Where options is a non-strict object with following supported properties and the
     ignoreRequired: false,  // do not enforce required, handy for db updates
     doNotCoerce: false,     // do not coerce types
     returnValue: false,     // return the scrubed value, rather than null, on success
-                            //    handy for scrubing scalars or for recasting objects
+                            //    handy for scrubing scalars or for recasting scalars to objects
     log: false              // log the arguments to each recursive scrub call,
                             //    handy for debugging deeply nested spec
   }

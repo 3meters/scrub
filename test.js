@@ -373,6 +373,16 @@ test.valueSettersWorkForScalars = function() {
   assert('foofoo' === o.s1)
 }
 
+test.arrayDefaults = function() {
+  spec = {
+    a1: {type: 'array', default: []}
+  }
+  var o = {}
+  var err = scrub(o, spec)
+  assert(isNull(err))
+  assert(o.a1)
+  assert(0 === o.a1.length)
+}
 
 test.valueSettersWorkForObjects = function() {
   spec = {type: 'object',
