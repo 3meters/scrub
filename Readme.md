@@ -29,10 +29,10 @@ function fn(v) {
 fn(1)         // Error: 'Invalid type'
 fn('foo')     // 3
 ```
-With scrub I define all my assumptions about a value with a succint spec.  If the value fails my spec, scub crafts a detailed error explaining where things went wrong.  Scrub is particularly well-suited for checking data between a public api, like a web service, and a schemaless store, like mongodb.  It let you remove virtually all the type and value checking you have in the body of your functions and move them all to single, easy-to-read spec at the top of the file.
+With scrub I define all my assumptions about a value with a succint spec.  If the value fails my spec, scub crafts a detailed error explaining where things went wrong.  Scrub is particularly well-suited for checking data between a public api, like a web service, and a schemaless store, like mongodb.  It lets you remove virtually all the type and value checking from the body of your functions, and move them to a single, easy-to-read spec at the top of the file.
 
 ### Scrub specs
-Scrub specs are ordinary objects that you define. Here is the bootstrap spec for a spec. The most important properties are type, value, required, and default.  Scrub recurses on the value property for nested specs, and iterates the scrub over arrays.
+Scrub specs are ordinary objects that you craft. Here is the bootstrap spec for a spec. The most important properties are type, value, required, and default.  Scrub recurses on the value property for nested specs, and iterates the scrub over arrays.
 ```js
 var _spec = {
   type: 'object',
