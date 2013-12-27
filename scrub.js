@@ -53,7 +53,7 @@ var _spec = {
     init:       {type: 'function'},
     default:    {},
     required:   {type: 'boolean'},
-    type:       {type: 'string'},
+    type:       {type: 'string|object'},
     value:      {},
     validate:   {type: 'function'},
     finish:     {type: 'function'},
@@ -90,20 +90,21 @@ function scrub(rootValue, rootSpec, rootOptions) {
     }
 
     // Set default
-    if (isUndefined(value) && isDefined(spec.default)) {
+    if (isUndefined(value) && isDefined(spec.default)
+        && !options.IgnoreDefaults) {
       result = setDefault(spec, options)
       if (isError(result)) return fail(result, arguments)
       else value = result
     }
 
     // Check required
-    if (spec.required && !options.ignoreRequire && 
+    if (spec.required && !options.ignoreRequire &&
         (isUndefined(value) || isNull(value))) {
       return fail('missingParam', options.key, arguments)
     }
 
-    // Check type
-    if (isDefined(value) && isDefined(spec.type)) {
+    // Check type.  If spec.type is an object we assume it is a field named 'type'
+    if (isDefined(value) && isDefined(spec.type) && !isObject(spec.type)) {
       if (!isString(spec.type)) {
         return fail('badSpec', 'spec.type must be a string', arguments)
       }
@@ -176,7 +177,8 @@ function scrub(rootValue, rootSpec, rootOptions) {
     // Set defaults for undefined keys
     for (var key in specFields) {
       if (isUndefined(value[key])
-          && isDefined(specFields[key].default)) {
+          && isDefined(specFields[key].default)
+          && !options.ignoreDefaults) {
         result = setDefault(specFields[key], options)
         if (isError(result)) {
           return fail(result, arguments)

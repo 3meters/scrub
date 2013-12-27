@@ -583,5 +583,66 @@ test.specsCanHaveExtraFields = function() {
 }
 
 
+test.optionIgnoreRequired = function() {
+  spec = {
+    s1: {type: 'string', required: true},
+  }
+  val = {}
+  err = scrub(val, spec)
+  assert(isError(err))
+  err = scrub(val, spec, {ignoreRequired: true})
+  assert(isNull(err))
+}
+
+
+test.optionIgnoreDefaults = function() {
+  spec = {
+    s1: {type: 'string', default: 'hi'},
+  }
+  val = {}
+  err = scrub(val, spec)
+  assert('hi' === val.s1)
+  val = {}
+  err = scrub(val, spec, {ignoreDefaults: true})
+  assert(!val.s1)
+}
+
+
+test.optionReturnValue = function() {
+  spec = {
+    value: function(v) {
+      switch (tipe(v)) {
+        case 'string': return {s1: v}
+        case 'number': return {n1: v}
+        case 'object': return v
+        default: return null
+      }
+    }
+  }
+  val = 5
+  err = scrub(val, spec)
+  assert(isNull(err))
+  assert(5 === val)
+  val = scrub(val, spec, {returnValue: true})
+  assert(tipe.isObject(val))
+  assert(5 === val.n1)
+  val = 'hello'
+  val = scrub(val, spec, {returnValue: true})
+  assert('hello' === val.s1)
+}
+
+
+test.canHaveFieldsNamedWithSpecKeywords = function() {
+  spec = {
+    type: {type: 'string'}
+  }
+  val = {
+    type: 'I am a field named type of type string'
+  }
+  err = scrub(val, spec)
+  assert(isNull(err))
+}
+
+
 // Run tests
 main()
