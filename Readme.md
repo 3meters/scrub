@@ -124,9 +124,9 @@ spec = {n1: {
   }
 }}
 val = {}
-err = scrub({}, spec}             // null
+err = scrub({}, spec}                 // null
 val                                   // {n1:1, n2:1}
-err = scrub({}, spec, {foo: true}     // null
+err = scrub({}, spec, {foo: true})    // null
 val                                   // {n1:2, n2:4}
 ```
 
