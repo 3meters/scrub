@@ -1,6 +1,6 @@
 #scrub [![NPM version](https://badge.fury.io/js/scrub.png)](http://badge.fury.io/js/scrub)
 
-  The world's only javascript argument scrubber.
+  The world's only javascript argument checker.
 
 ## Why Scrub?
   Scrub aims to solve this problem:
@@ -19,17 +19,23 @@ var scrub = require('scrub')
 
 function fn(v) {
 
-  var spec = {type: 'string'}
-  var err = scrub(v, spec)
+  var err = scrub(v, {
+    type: 'string',
+    required: true
+  })
   if (err) return err
 
-  // I now know absolutely everything I could ever want to know about v
+  // I now know absolutely everything I could ever want to know about v.
+  // I may have modified v with default values or custom functions.
+  // It's almost like having a compiler, only better...
   ...
 }
 fn(1)         // Error: 'Invalid type'
-fn('foo')     // 3
+fn()          // Error: 'Missing required'
 ```
-With scrub I define all my assumptions about a value with a succint spec.  If the value fails my spec, scub crafts a detailed error explaining where things went wrong.  Scrub is particularly well-suited for checking data between a public api, like a web service, and a schemaless store, like mongodb.  It lets you remove virtually all the type and value checking from the body of your functions, and move them to a single, easy-to-read spec at the top of the file.
+Don't worry, defining your own errors is easy. 
+
+With scrub I define all my assumptions about a value with a succint spec.  If the value fails my spec, scub crafts a detailed error explaining where things went wrong.  Within the spec, if you care, you have full control over the Error that is thrown.  Scrub is particularly well-suited for checking data between a public api, like a web service, and a schemaless store, like mongodb.  It lets you remove virtually all the type and value checking from the body of your functions, and move them to a single, easy-to-read spec at the top of the file.
 
 ### Scrub specs
 Scrub specs are ordinary objects that you craft. Here is the bootstrap spec for a spec. The most important properties are type, value, required, and default.  Scrub recurses on the value property for nested specs, and iterates the scrub over arrays.
