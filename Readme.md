@@ -40,7 +40,7 @@ hello('FOOBAR')   // 'hello foobar your third char is O'
 ### Why is this useful?
 You now know everything you need to know about the variable arg.  This is a simple example, but scrub aims to handle virtually any state that can be described syncronously. The descripton syntax aims to be as concise as possible. The error reporting aims to be as precise as possible.
 
-With scrub you define all your assumptions about a value with a succint spec.  If the value fails my spec, scub crafts a detailed error explaining where things went wrong.  Within the spec, if you care, you have full control over the error that is thrown.  Scrub is particularly well-suited for checking data between a public api, like a web service, and a schemaless store, like mongodb.  It lets you remove virtually all the type and value checking from the body of your functions, and move them to a single, easy-to-read spec at the top of the file.
+With scrub you define all your assumptions about a value with a succint spec.  If the value fails your spec, scub crafts a detailed error explaining where things went wrong.  Within the spec, if you care, you have full control over the error that is thrown.  Scrub is particularly well-suited for checking data between a public api, like a web service, and a schemaless store, like mongodb.  It lets you remove virtually all the type and value checking from the body of your functions, and move them to a single, easy-to-read spec at the top of the file.
 
 ### Scrub specs
 Scrub specs are ordinary objects that you craft. Here is the bootstrap spec for a spec. The most important properties are type, value, required, and default.  Scrub recurses on the value property for nested specs, and iterates the scrub over arrays.
