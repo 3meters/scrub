@@ -37,7 +37,8 @@ hello('fo')       // Error: 'Expected string length > 3'
 hello('FOOBAR')   // 'hello foobar your third char is O'
 ```
 
-I now know everything I need to know about the var arg.  This is simple example, but scrub can handle virtually any state that can be described syncronously. If you find one that you cannot describe, please send a pull request or log an issue.
+### Why is this useful?
+You now know everything you need to know about the variable arg.  This is a simple example, but scrub aims to handle virtually any state that can be described syncronously. The descripton syntax aims to be as concise as possible. The error reporting aims to be as precise as possible.
 
 With scrub you define all your assumptions about a value with a succint spec.  If the value fails my spec, scub crafts a detailed error explaining where things went wrong.  Within the spec, if you care, you have full control over the error that is thrown.  Scrub is particularly well-suited for checking data between a public api, like a web service, and a schemaless store, like mongodb.  It lets you remove virtually all the type and value checking from the body of your functions, and move them to a single, easy-to-read spec at the top of the file.
 
@@ -252,6 +253,8 @@ err = scrub(val, spec, {strict: true}) // err is null because o2 strict attribut
 val.o2.o1 = {n2: 100}
 err = scrub(val, spec, {strict: true}) // err is Error because spec.o2.o1 does not allow properties other than n1
 ```
+## Production Use
+3meters uses the current public version of the master branch of this module as a core component of its live production services.
 ## Contributing
 Contributions welcome.
 ## Copyright
