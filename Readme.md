@@ -3,7 +3,7 @@
   The world's only javascript argument checker.
 
 ## Why Scrub?
-  Scrub aims to solve this problem:
+  Scrub solves this problem:
 ```js
 function fn(v) {
   // what the heck is v?
@@ -17,25 +17,29 @@ npm install scrub
 ```js
 var scrub = require('scrub')
 
-function fn(v) {
+function hello(arg) {
 
-  var err = scrub(v, {
+  var spec = {
     type: 'string',
-    required: true
-  })
+    required: true,
+    validate: function(v) { if (v.length < 3) return 'Expected string length > 3' }
+  }
+
+  var err = scrub(arg, spec)
   if (err) return err
 
-  // I now know absolutely everything I could ever want to know about v.
-  // I may have modified v with default values or custom functions.
-  // It's almost like having a compiler, only better...
-  ...
+  return 'hello ' + arg.toLowerCase() + ' your third char is ' + arg.slice(2,1)
 }
-fn(1)         // Error: 'Invalid type'
-fn()          // Error: 'Missing required'
-```
-Don't worry, defining your own errors is easy. 
 
-With scrub I define all my assumptions about a value with a succint spec.  If the value fails my spec, scub crafts a detailed error explaining where things went wrong.  Within the spec, if you care, you have full control over the Error that is thrown.  Scrub is particularly well-suited for checking data between a public api, like a web service, and a schemaless store, like mongodb.  It lets you remove virtually all the type and value checking from the body of your functions, and move them to a single, easy-to-read spec at the top of the file.
+hello()           // Error: 'Missing required'
+hello(1)          // Error: 'Invalid type'
+hello('fo')       // Error: 'Expected string length > 3'
+hello('FOOBAR')   // 'hello foobar your third char is O'
+```
+
+I now know everything I need to know about the var arg.  This is simple example, but scrub can handle virtually any state that can be described syncronously. If you find one that you cannot describe, please send a pull request or log an issue.
+
+With scrub you define all your assumptions about a value with a succint spec.  If the value fails my spec, scub crafts a detailed error explaining where things went wrong.  Within the spec, if you care, you have full control over the error that is thrown.  Scrub is particularly well-suited for checking data between a public api, like a web service, and a schemaless store, like mongodb.  It lets you remove virtually all the type and value checking from the body of your functions, and move them to a single, easy-to-read spec at the top of the file.
 
 ### Scrub specs
 Scrub specs are ordinary objects that you craft. Here is the bootstrap spec for a spec. The most important properties are type, value, required, and default.  Scrub recurses on the value property for nested specs, and iterates the scrub over arrays.
@@ -137,7 +141,7 @@ val                                   // {n1:2, n2:4}
 ```
 
 ### Custom Validators
-Validators are similar to setters, except they return a positive value on failure, in most cases a simple string. Scrub will convert a string returned by validator into an error with the code property set to 'badValue'.  To override this code, return an Error with its code property set.  
+Validators are similar to setters, except they return a positive value on failure, in most cases a simple string. Scrub will convert a string returned by validator into an error with the code property set to 'badValue'.  To override this code, return an Error with its code property set.
 ```js
 spec = {
   type: 'number',

@@ -59,6 +59,25 @@ test.basicRequired = function() {
 }
 
 
+test.undefinedValuesPassTypeCheck = function() {
+  err = scrub({s1: undefined}, {s1: {type: 'string'}})
+  assert(isNull(err))
+}
+
+
+test.nullValuesFailTypeCheck = function() {
+  err = scrub({s1: null}, {s1: {type: 'string'}})
+  assert(isError(err))
+  assert('badType' === err.code)
+}
+
+
+test.nullValuesPassNullTypeCheck = function() {
+  err = scrub({s1: null}, {s1: {type: 'string|null'}})
+  assert(isNull(err))
+}
+
+
 test.basicDefault = function() {
   val = {}
   err = scrub(val, {n1: {default: 1}})
@@ -185,12 +204,6 @@ test.coerceStrings = function() {
   assert(true === val.b3)
   assert(false === val.b4)
   assert(false === val.b5)
-}
-
-
-test.undefinedValuesPassTypeCheck = function() {
-  err = scrub({s1: undefined}, {s1: {type: 'string'}})
-  assert(isNull(err))
 }
 
 
@@ -373,6 +386,7 @@ test.valueSettersWorkForScalars = function() {
   assert('foofoo' === o.s1)
 }
 
+
 test.arrayDefaults = function() {
   spec = {
     a1: {type: 'array', default: []}
@@ -383,6 +397,7 @@ test.arrayDefaults = function() {
   assert(o.a1)
   assert(0 === o.a1.length)
 }
+
 
 test.valueSettersWorkForObjects = function() {
   spec = {type: 'object',
@@ -398,6 +413,7 @@ test.valueSettersWorkForObjects = function() {
   assert(isNull(err))
   assert('barbar' === o.s1)
 }
+
 
 test.valueSettersWorkForArrays = function() {
   spec = {
@@ -419,6 +435,7 @@ test.valueSettersWorkForArrays = function() {
   assert('barbar' === a[1].s1)
 }
 
+
 test.valueSettersThatThrowReturnBadSchemaError = function() {
   spec = {
     type: 'object', value: function(v) {
@@ -429,6 +446,7 @@ test.valueSettersThatThrowReturnBadSchemaError = function() {
   assert(isError(err))
   assert('badSpec' === err.code)
 }
+
 
 test.validatorsWork = function() {
   spec = {
@@ -494,7 +512,6 @@ test.functionValidatorsGiveSpecErrIfTheyThrow = function() {
 }
 
 
-
 test.validatorsCanAccessThisObjectAndUserDefinedOptions = function() {
   spec = {
     n1: {type: 'number', default: 0},
@@ -549,6 +566,7 @@ test.validatorsWithArrays = function() {
   assert('failedValidator' === err.code)
 }
 
+
 test.initAndFinishWork = function() {
   err, spec = {
     init: function(v, options) {
@@ -572,6 +590,7 @@ test.initAndFinishWork = function() {
   assert(2 === val.length)
   assert('bar' === val[1].s1)
 }
+
 
 test.specsCanHaveExtraFields = function() {
   spec = {
