@@ -1,6 +1,10 @@
-#scrub [![NPM version](https://badge.fury.io/js/scrub.png)](http://badge.fury.io/js/scrub)
+#scrub
 
   The world's only javascript argument checker.
+
+[![NPM version](https://badge.fury.io/js/scrub.png)](http://badge.fury.io/js/scrub)
+[![Build Status](https://travis-ci.org/3meters/scrub.svg?branch=master)](https://travis-ci.org/3meters/scrub)
+[![Coverage Status](https://coveralls.io/repos/3meters/scrub/badge.png)](https://coveralls.io/r/3meters/scrub)
 
 ## Why Scrub?
   Scrub solves this problem:
