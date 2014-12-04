@@ -1,6 +1,6 @@
 {
   "name": "scrub",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The world's only javascript argument checker",
   "homepage": "https://github.com/3meters/scrub",
   "keywords": [ "argument", "arguments", "parameter", "parameters", "check", "checker", "schema", "type", "tipe" ],
@@ -15,8 +15,18 @@
   "dependencies": {
     "tipe": "*"
   },
+  "devDependencies": {
+    "jshint": "*",
+    "istanbul": "*",
+    "coveralls": "*"
+  },
   "main": "scrub.js",
-  "scripts": { "test": "node test.js" },
+  "scripts": {
+    "lint": "jshint *.js",
+    "test": "node test.js",
+    "cover": "istanbul cover test.js",
+    "coveralls": "istanbul cover ./test.js && cat ./coverage/lcov.info | coveralls"
+  },
   "license": "MIT",
   "readmeFilename": "Readme.md"
 }

@@ -4,6 +4,7 @@
  * tests are synchronous and throw on first failure
  */
 
+/* jshint asi: true */
 
 // Dependencies
 var scrub = require('./scrub')
@@ -503,7 +504,8 @@ test.functionValidatorsGiveSpecErrIfTheyThrow = function() {
   spec = {
     type: 'string',
     value: function(v) {
-      foo.bar // will throw a runtime error
+      // will throw a runtime error
+      foo.bar // jshint ignore:line
     }
   }
   err = scrub('Hello', spec)
@@ -568,7 +570,7 @@ test.validatorsWithArrays = function() {
 
 
 test.initAndFinishWork = function() {
-  err, spec = {
+  spec = {
     init: function(v, options) {
       if ('object' === tipe(v)) {
         options.initRan = true

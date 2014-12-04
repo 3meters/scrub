@@ -20,6 +20,7 @@
  * MIT Licensed
  */
 
+/* jshint asi: true */
 
 var inspect = require('util').inspect
 
@@ -66,9 +67,8 @@ function scrub(rootValue, rootSpec, rootOptions) {
 
   result = _scrub(rootValue, rootSpec, rootOptions)
   if (isError(result)) return result
-  return (rootOptions.returnValue)
-    ? result
-    : null
+
+  return (rootOptions.returnValue) ? result : null
 
 
   // Main worker
@@ -90,8 +90,9 @@ function scrub(rootValue, rootSpec, rootOptions) {
     }
 
     // Set default
-    if (isUndefined(value) && isDefined(spec.default)
-        && !options.IgnoreDefaults) {
+    if (isUndefined(value) &&
+        isDefined(spec.default) &&
+        !options.IgnoreDefaults) {
       result = setDefault(spec, options)
       if (isError(result)) return fail(result, arguments)
       else value = result
@@ -156,18 +157,19 @@ function scrub(rootValue, rootSpec, rootOptions) {
   // Check an object
   function checkObject(value, spec, options) {
 
-    var result
+    var key, result
 
     if (!isObject(spec)) return value
 
     // Spec fields may be nested inside an object
-    var specFields = (match('object', spec.type) && isObject(spec.value))
-      ? spec.value
-      : spec
+    var specFields = spec
+    if (match('object', spec.type) && isObject(spec.value)) {
+      specFields = spec.value
+    }
 
     // In strict mode check for unrecognized keys
     if (options.strict) {
-      for (var key in value) {
+      for (key in value) {
         if (isUndefined(specFields[key])) {
           return fail('badParam', key, arguments)
         }
@@ -175,10 +177,10 @@ function scrub(rootValue, rootSpec, rootOptions) {
     }
 
     // Set defaults for undefined keys
-    for (var key in specFields) {
-      if (isUndefined(value[key])
-          && isDefined(specFields[key].default)
-          && !options.ignoreDefaults) {
+    for (key in specFields) {
+      if (isUndefined(value[key]) &&
+          isDefined(specFields[key].default) &&
+          !options.ignoreDefaults) {
         result = setDefault(specFields[key], options)
         if (isError(result)) {
           return fail(result, arguments)
@@ -189,16 +191,16 @@ function scrub(rootValue, rootSpec, rootOptions) {
 
     // Check for missing required
     if (!options.ignoreRequired) {
-      for (var key in specFields) {
-        if (specFields[key].required
-            && (isUndefined(value[key]) || isNull(value[key]))) {
+      for (key in specFields) {
+        if (specFields[key].required &&
+            (isUndefined(value[key]) || isNull(value[key]))) {
           return fail('missingParam', key, arguments)
         }
       }
     }
 
     // Recursively check the value's properties
-    for (var key in value) {
+    for (key in value) {
       if (isObject(specFields[key])) {
         options.key = key
         result = _scrub(value[key], specFields[key], options)  // recurse
@@ -232,9 +234,9 @@ function scrub(rootValue, rootSpec, rootOptions) {
 
     var success
 
-    if (!isObject(spec)
-        || isNull(value)
-        || isUndefined(value))
+    if (!isObject(spec) ||
+        isNull(value) ||
+        isUndefined(value))
       return value  // success
 
     switch (tipe(spec.value)) {
@@ -257,9 +259,8 @@ function scrub(rootValue, rootSpec, rootOptions) {
         return fail('badSpec', spec.value, arguments)
     }
 
-    return (success)
-      ? value
-      : fail('badValue', options.key + ': ' + spec.value, arguments)
+    if (success) return value
+    else return fail('badValue', options.key + ': ' + spec.value, arguments)
   }
 
 
@@ -311,10 +312,10 @@ function scrub(rootValue, rootSpec, rootOptions) {
   // Replace old object's values with new objects only if
   // they match on type.  Optially allow new properties.
   function override(obj1, obj2, allowNew) {
+    var key, newObj = {}
     if (!(isObject(obj1) && isObject(obj2))) return obj1
-    var newObj = {}
-    for (var key in obj1) { newObj[key] = obj1[key] }
-    for (var key in obj2) {
+    for (key in obj1) { newObj[key] = obj1[key] }
+    for (key in obj2) {
       if (allowNew && isUndefined(obj1[key])) {
         newObj[key] = obj2[key]
       }
@@ -414,8 +415,9 @@ function match(str, strEnum) {
 
 // Returns an error, rather than throws, for objects that JSON can't serialize
 function clone(obj) {
+  var clonedObj
   if (isScalar(obj)) return obj
-  try { var clonedObj = JSON.parse(JSON.stringify(obj)) }
+  try { clonedObj = JSON.parse(JSON.stringify(obj)) }
   catch(err) {
     err.code = 'badSpec'
     err.message = 'Default value could not be cloned: ' + err.message
