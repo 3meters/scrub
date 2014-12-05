@@ -61,6 +61,7 @@ var _spec = {
   }
 }
 
+
 function scrub(rootValue, rootSpec, rootOptions) {
 
   rootOptions = override(_options, rootOptions, true)
@@ -159,8 +160,6 @@ function scrub(rootValue, rootSpec, rootOptions) {
 
     var key, result
 
-    if (!isObject(spec)) return value
-
     // Spec fields may be nested inside an object
     var specFields = spec
     if (match('object', spec.type) && isObject(spec.value)) {
@@ -214,7 +213,6 @@ function scrub(rootValue, rootSpec, rootOptions) {
 
   // Check an array
   function checkArray(value, spec, options) {
-    if (!isObject(spec)) return value
     if (isObject(spec.value)) {
       for (var i = 0; i < value.length; i++) {
         options.key = i
@@ -429,6 +427,7 @@ function clone(obj) {
 
 // Debugging helper
 function log(s, o) {
+  o = o || ''
   if (isArguments(s)) {
     return log('scrub arguments:', {
       value: s[0],
@@ -436,7 +435,7 @@ function log(s, o) {
       options: prune(s[2]),
     })
   }
-  console.log(s += (o) ? '\n' + inspect(o, {depth: 10}) : '')
+  console.log(s += '\n' + inspect(o, {depth: 10}))
 }
 
 

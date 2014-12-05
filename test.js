@@ -34,7 +34,7 @@ function main() {
   console.log('\nscrub tests\n===========')
   for (var t in test) {
     console.log(t)
-    var val, spec, err  // reset module vars
+    val = spec = err = undefined // reset module vars
     test[t]()
   }
   console.log('\nscrub ok')
@@ -44,12 +44,42 @@ function main() {
 // Tests
 
 test.minimalWorks = function() {
-  spec = {type: 'number', required: true}
-  err = scrub(1, spec)
+
+  err = scrub()
   assert(isNull(err))
-  err = scrub('foo', spec)
+
+  val = 1
+  spec = {type: 'number', required: true}
+  err = scrub(val, spec)
+  assert(isNull(err))
+
+  val = 'foo'
+  err = scrub(val, spec)
   assert(isError(err))
   assert('badType' === err.code)
+
+  val = 1
+  spec = {value: 1}
+  err = scrub(val, spec)
+  assert(isNull(err))
+
+  val = 2
+  err = scrub(val, spec)
+  assert(isError(err))
+
+  val = 1
+  spec = {value: true}
+  err = scrub(val, spec)
+  assert(isError(err))
+
+  val = true
+  err = scrub(val, spec)
+  assert(isNull(err))
+
+  val = {}
+  spec = {}
+  err = scrub(val, spec)
+  assert(isNull(err))
 }
 
 
@@ -80,10 +110,33 @@ test.nullValuesPassNullTypeCheck = function() {
 
 
 test.basicDefault = function() {
+
   val = {}
-  err = scrub(val, {n1: {default: 1}})
+  spec = {n1: {default: 1}}
+  err = scrub(val, spec)
   assert(isNull(err))
   assert(1 === val.n1)
+
+  val = {}
+  spec = { n1: {default: function() {return 2}}}
+  err = scrub(val, spec)
+  assert(isNull(err))
+  assert(2 === val.n1)
+
+  val = {}
+  spec = { n1: {default: function() {return new Error('My default is an error')}}}
+  err = scrub(val, spec)
+  assert(isError(err))
+
+  val = undefined
+  spec = {default: 1}
+  err = scrub(val, spec)
+  assert(isNull(err))
+
+  val = undefined
+  spec = {default: 1}
+  err = scrub(val, spec, {returnValue: true})
+  assert(1 === err)
 }
 
 
@@ -161,9 +214,14 @@ test.bigSuccedes = function() {
     assert(tipe.isString(elm.s1))
     assert('hello' === elm.s2)
   })
+
+  val.o4 = {}
+  err = scrub(val, spec)
+  assert(isNull(err))
+
   val.a2.push({s2: 'I should fail'})
   err = scrub(val, spec)
-  assert(err)
+  assert(isError(err))
   assert('missingParam' === err.code)
 }
 
@@ -205,6 +263,11 @@ test.coerceStrings = function() {
   assert(true === val.b3)
   assert(false === val.b4)
   assert(false === val.b5)
+
+  val = {n1: '100'}
+  err = scrub(val, spec, {doNotCoerce: true})
+  assert(isError(err))
+  assert('badType' === err.code)
 }
 
 
@@ -591,6 +654,13 @@ test.initAndFinishWork = function() {
   assert(!isError(val))
   assert(2 === val.length)
   assert('bar' === val[1].s1)
+  spec.finish = function(v, options) {
+    return new Error('I always error')
+  }
+  val = {s1: 'foo'}
+  val = scrub(val, spec, {returnValue: true})
+  assert(isError(val))
+  assert('I always error' === val.message)
 }
 
 
@@ -622,9 +692,11 @@ test.optionIgnoreDefaults = function() {
   }
   val = {}
   err = scrub(val, spec)
+  assert(isNull(err))
   assert('hi' === val.s1)
   val = {}
   err = scrub(val, spec, {ignoreDefaults: true})
+  assert(isNull(err))
   assert(!val.s1)
 }
 
@@ -661,6 +733,68 @@ test.canHaveFieldsNamedWithSpecKeywords = function() {
     type: 'I am a field named type of type string'
   }
   err = scrub(val, spec)
+  assert(isNull(err))
+}
+
+
+test.initWords = function() {
+  spec = {
+    foo: {
+      type: 'string',
+      init: function(v) {
+        if (v !== 'bar') return new Error('foo must be bar')
+      }
+    }
+  }
+  err = scrub({foo: 'bar'}, spec)
+  assert(isNull(err))
+  err = scrub({foo: 'not bar'}, spec)
+  assert(isError(err))
+}
+
+
+test.badInputsFailProperly = function() {
+  err = scrub(1, 1)
+  assert(isNull(err))
+  spec = {type: 1}    // type must be a string
+  err = scrub(1, spec)
+  assert(isError(err))
+  assert(err.code === 'badSpec')
+  val = 'foo'
+  spec = {
+    type: 'string',
+    value: spec,      // illegal recursive spec definition
+  }
+  err = scrub(val, spec)
+  assert(isError(err))
+  assert(err.code === 'badSpec')
+}
+
+test.defaultsCannotBeCircular = function() {
+  val = undefined
+  var circularDefault = {
+    type: 'object',
+    value: {
+      foo: {
+        type: 'string',
+        default: 'bar',
+      }
+    }
+  }
+  circularDefault.value.foo.default = circularDefault
+  spec = {
+    type: 'string',
+    default: circularDefault,
+  }
+  err = scrub(val, spec)
+  assert(isError(err))
+  assert(err.code === 'badSpec')
+}
+
+
+test.loggingWorks = function() {
+  spec = {type: 'string'}
+  err = scrub('foo', spec, {log: true})
   assert(isNull(err))
 }
 
