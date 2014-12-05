@@ -29,18 +29,6 @@ function assert(expr) {
 }
 
 
-// Run tests
-function main() {
-  console.log('\nscrub tests\n===========')
-  for (var t in test) {
-    console.log(t)
-    val = spec = err = undefined // reset module vars
-    test[t]()
-  }
-  console.log('\nscrub ok')
-}
-
-
 // Tests
 
 test.minimalWorks = function() {
@@ -798,6 +786,16 @@ test.loggingWorks = function() {
   assert(isNull(err))
 }
 
+
+function main() {
+  console.log('\nscrub tests\n===========')
+  for (var t in test) {
+    console.log(t)
+    val = spec = err = undefined // reset module vars
+    test[t]()
+  }
+  console.log('\nscrub ok')
+}
 
 // Run tests
 main()

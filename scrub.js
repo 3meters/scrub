@@ -22,7 +22,7 @@
  */
 
 
-/* jshint asi: true */  // Just say no to semi-colons
+/* jshint asi: true */  // Just say no to semicolons
 
 
 // Wrap in an anonymous function to prevent strict mode from leaking
