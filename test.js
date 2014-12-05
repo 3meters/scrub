@@ -642,6 +642,12 @@ test.initAndFinishWork = function() {
   assert(!isError(val))
   assert(2 === val.length)
   assert('bar' === val[1].s1)
+
+  val = [1, 2, 3]
+  val = scrub(val, spec, {returnValue: true})
+  assert('array' === tipe(val))
+  assert(3 === val.length)
+
   spec.finish = function(v, options) {
     return new Error('I always error')
   }
@@ -700,16 +706,27 @@ test.optionReturnValue = function() {
       }
     }
   }
+
   val = 5
   err = scrub(val, spec)
   assert(isNull(err))
   assert(5 === val)
+
   val = scrub(val, spec, {returnValue: true})
   assert(tipe.isObject(val))
   assert(5 === val.n1)
+
   val = 'hello'
   val = scrub(val, spec, {returnValue: true})
   assert('hello' === val.s1)
+
+  val = {foo: 'bar'}
+  val = scrub(val, spec, {returnValue: true})
+  assert('bar' === val.foo)
+
+  val = /^foo/
+  val = scrub(val, spec, {returnValue: true})
+  assert(null === val)
 }
 
 
