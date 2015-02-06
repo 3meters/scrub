@@ -214,7 +214,7 @@ test.bigSuccedes = function() {
 }
 
 
-test.coerceStrings = function() {
+test.coerce = function() {
   spec = {
     n1: {type: 'number'},
     n2: {type: 'number'},
@@ -226,7 +226,10 @@ test.coerceStrings = function() {
     b3: {type: 'boolean'},
     b4: {type: 'boolean'},
     b5: {type: 'boolean'},
+    b6: {type: 'boolean'},
+    b7: {type: 'boolean'},
   }
+
   val =  {
     n1: '100',
     n2: '-1',
@@ -238,7 +241,10 @@ test.coerceStrings = function() {
     b3: '1',
     b4: '0',
     b5: '-1',
+    b6: 1,
+    b7: -1,
   }
+
   err = scrub(val, spec)
   assert(isNull(err))
   assert(100 === val.n1)
@@ -251,6 +257,8 @@ test.coerceStrings = function() {
   assert(true === val.b3)
   assert(false === val.b4)
   assert(false === val.b5)
+  assert(true === val.b6)
+  assert(false === val.b7)
 
   val = {n1: '100'}
   err = scrub(val, spec, {doNotCoerce: true})
@@ -799,7 +807,7 @@ test.defaultsCannotBeCircular = function() {
 
 test.loggingWorks = function() {
   spec = {type: 'string'}
-  err = scrub('foo', spec, {log: true})
+  err = scrub('log works', spec, {log: true})
   assert(isNull(err))
 }
 

@@ -22,7 +22,7 @@
  */
 
 
-/* jshint asi: true */  // Just say no to semicolons
+/* jshint asi: true */  // Accept missing semicolons
 
 
 // Wrap in an anonymous function to prevent strict mode from leaking
@@ -71,6 +71,7 @@
   }
 
 
+  // Entry
   function scrub(rootValue, rootSpec, rootOptions) {
 
     rootOptions = override(_options, rootOptions, true)
@@ -317,7 +318,7 @@
 
 
     // Replace old object's values with new objects only if
-    // they match on type.  Optially allow new properties.
+    // they match on type.  Optionally allow new properties.
     function override(obj1, obj2, allowNew) {
       var key, newObj = {}
       if (!(isObject(obj1) && isObject(obj2))) return obj1
@@ -336,11 +337,11 @@
     }
 
 
-    // Query string params arrive parsed as strings
-    // If the spec type is number or boolean try to cooerce
+    // If the spec type is number or boolean try to coerce
+    // strings or numbers to the spec type before evaluating
     function coerceType(value, spec, options) {
       if (options.doNotCoerce) return value
-      if (!isString(value)) return value
+      if (!isString(value) && !isNumber(value)) return value
       switch(spec.type) {
         case 'number':
           var f = parseFloat(value)

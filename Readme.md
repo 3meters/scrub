@@ -257,10 +257,13 @@ err = scrub(val, spec, {strict: true}) // err is null because o2 strict attribut
 val.o2.o1 = {n2: 100}
 err = scrub(val, spec, {strict: true}) // err is Error because spec.o2.o1 does not allow properties other than n1
 ```
+
 ## Production Use
-3meters uses the current public version of the master branch of this module as a core component of its live production services.
+3meters dogfoods the master branch in production.
+
 ## Contributing
 Contributions welcome.
+
 ## Copyright
   Copyright (c) 2013 3meters.  All rights reserverd.
 ## License
