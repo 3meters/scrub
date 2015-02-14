@@ -710,6 +710,30 @@ test.specsCanHaveExtraFields = function() {
 }
 
 
+test.specsCannotBeUndefined = function() {
+  spec = {
+    s1: {type: 'string'},
+    foo: undefined
+  }
+  val = {s1: 'foo'}
+  err = scrub(val, spec)
+  assert(isError(err))
+  assert(err.code === 'badSpec')
+}
+
+
+test.specsCannotBeNull = function() {
+  spec = {
+    s1: {type: 'string'},
+    foo: null
+  }
+  val = {s1: 'foo'}
+  err = scrub(val, spec)
+  assert(isError(err))
+  assert(err.code === 'badSpec')
+}
+
+
 test.optionIgnoreRequired = function() {
   spec = {
     s1: {type: 'string', required: true},
@@ -809,7 +833,7 @@ test.specsCanRecurse = function() {
   err = scrub(val, spec)
   assert(isNull(err))
 
-  var val = {
+  val = {
     s1: 'foo',
     n1: 1,
     o1: {

@@ -190,8 +190,13 @@
 
       // Set defaults for undefined keys
       for (key in specFields) {
+
+        // specs must be defined and not null
+        if (isUndefined(specFields[key]) || isNull(specFields[key])) {
+          return fail('badSpec', key, arguments)
+        }
+
         if (isUndefined(value[key]) &&
-            isDefined(specFields[key]) &&
             isDefined(specFields[key].default) &&
             !options.ignoreDefaults) {
           result = setDefault(specFields[key], options)

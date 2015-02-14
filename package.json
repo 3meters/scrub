@@ -3,7 +3,7 @@
   "version": "0.1.5",
   "description": "The world's only JavaScript argument checker",
   "homepage": "https://github.com/3meters/scrub",
-  "keywords": [ "argument", "arguments", "parameter", "parameters", "check", "checker", "schema", "type", "tipe" ],
+  "keywords": [ "argument", "arguments", "parameter", "parameters", "schema", "type", "tipe" ],
   "author": {
     "name": "George Snelling",
     "email": "george@3meters.com"
@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "tipe": "*",
-    "lodash": "*"
   },
   "devDependencies": {
     "jshint": "*",
