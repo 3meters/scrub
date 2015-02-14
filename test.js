@@ -16,6 +16,7 @@ var inspect = require('util').inspect
 // Module vars
 var isError = tipe.isError
 var isNull = tipe.isNull
+var isObject = tipe.isObject
 var cAsserts = 0
 var test = {}
 var val, spec, err   // reset for each test
@@ -68,6 +69,39 @@ test.minimalWorks = function() {
   spec = {}
   err = scrub(val, spec)
   assert(isNull(err))
+
+  spec = {
+    s1: {type: 'string'},
+    n1: {type: 'number'},
+    b1: {type: 'boolean'},
+    o1: {type: 'object'},
+    a1: {type: 'array'},
+  }
+
+  val = {s1: 'foo', n1: 1, b1: true, o1: {}, a1:[]}
+  err = scrub(val, spec)
+  assert(isNull(err))
+
+  val = {s1: 1, n1: 1, b1: true, o1: {}, a1:[]}
+  err = scrub(val, spec)
+  assert(isError(err))
+
+  val = {s1: 'foo', n1: 'foo', b1: true, o1: {}, a1:[]}
+  err = scrub(val, spec)
+  assert(isError(err))
+
+  val = {s1: 'foo', n1: 1, b1: {}, o1: {}, a1:[]}
+  err = scrub(val, spec)
+  assert(isError(err))
+
+  val = {s1: 'foo', n1: 1, b1: true, o1: [], a1:[]}
+  err = scrub(val, spec)
+  assert(isError(err))
+
+  val = {s1: 'foo', n1: 1, b1: true, o1: {}, a1:{}}
+  err = scrub(val, spec)
+  assert(isError(err))
+
 }
 
 
@@ -738,6 +772,92 @@ test.optionReturnValue = function() {
 }
 
 
+test.specsCanRecurse = function() {
+  spec = {
+    s1: {type: 'string'},
+    n1: {type: 'number'},
+  }
+  // Circular
+  spec.o1 = spec
+
+  val = {
+    s1: 'foo',
+    n1: 1,
+  }
+  err = scrub(val, spec)
+  assert(isNull(err))
+
+  val = {
+    s1: 'foo',
+    n1: 'bar',
+  }
+  err = scrub(val, spec)
+  assert(isError(err))
+
+  val = {
+    s1: 'foo',
+    n1: 1,
+    o1: {
+      s1: 'foofoo',
+      n1: 2,
+      o1: {
+        s1: 'bar',
+        n1: 1,
+      }
+    }
+  }
+  err = scrub(val, spec)
+  assert(isNull(err))
+
+  var val = {
+    s1: 'foo',
+    n1: 1,
+    o1: {
+      s1: 'foofoo',
+      n1: 2,
+      o1: {
+        s1: 'bar',
+        n1: 'bar',
+      }
+    }
+  }
+  err = scrub(val, spec)
+  assert(isError(err))
+}
+
+
+test.specsCanRecurseWithDefaults = function() {
+  var spec = {
+    s1: {type: 'string'},
+    n1: {type: 'number', default: 1},
+    o1: {type: 'object', default: {}},
+  }
+  spec.o2 = spec
+
+  var val1 = {
+    s1: 'foo',
+    n1: 1,
+  }
+  err = scrub(val1, spec)
+  assert(isNull(err))
+
+  var val2 = {
+    s1: 'foo',
+    n1: 1,
+    o1: {
+      s1: 'foofoo',
+      n1: 2,
+      o1: {
+        s1: 'bar',
+        n1: 1
+      }
+    }
+  }
+  err = scrub(val2, spec)
+  assert(isNull(err))
+}
+
+
 test.canHaveFieldsNamedWithSpecKeywords = function() {
   spec = {
     type: {type: 'string'}
@@ -805,9 +925,9 @@ test.defaultsCannotBeCircular = function() {
 }
 
 
-test.loggingWorks = function() {
+test.debugWorks = function() {
   spec = {type: 'string'}
-  err = scrub('log works', spec, {log: true})
+  err = scrub('debug log output works', spec, {debug: true})
   assert(isNull(err))
 }
 

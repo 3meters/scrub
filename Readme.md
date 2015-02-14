@@ -232,6 +232,7 @@ Where options is a non-strict object with following supported properties and the
                             //    handy for scrubing scalars or for recasting scalars to objects
     log: false              // log the arguments to each recursive scrub call,
                             //    handy for debugging deeply nested spec
+    debug: false            // alias for log
   }
 ```
 Options can be set as an optional third argument to the top level call, or as properties of any spec or sub-spec.  They remain set for all children unless they are overridden.  For example, a top-level spec can be strict, meaning no unrecognized properties are allowed, except for one property, which can be unstrict, allowing un-specified sub-properties, except for one of its sub-properties, which must be strict, etc. For example: 

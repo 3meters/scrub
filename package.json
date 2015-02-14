@@ -1,6 +1,6 @@
 {
   "name": "scrub",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "The world's only JavaScript argument checker",
   "homepage": "https://github.com/3meters/scrub",
   "keywords": [ "argument", "arguments", "parameter", "parameters", "check", "checker", "schema", "type", "tipe" ],
@@ -13,7 +13,8 @@
     "url": "git://github.com/3meters/scrub.git"
   },
   "dependencies": {
-    "tipe": "*"
+    "tipe": "*",
+    "lodash": "*"
   },
   "devDependencies": {
     "jshint": "*",

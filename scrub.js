@@ -55,6 +55,7 @@
     doNotCoerce:    false,
     strict:         false,
     log:            false,
+    debug:          false,
   }
 
   var _spec = {
@@ -91,6 +92,8 @@
 
       options = override(options, spec, false)
 
+      // Debug and log are the same
+      if (options.debug) options.log = options.debug
       if (options.log) log(arguments)
 
       // Call init
@@ -188,6 +191,7 @@
       // Set defaults for undefined keys
       for (key in specFields) {
         if (isUndefined(value[key]) &&
+            isDefined(specFields[key]) &&
             isDefined(specFields[key].default) &&
             !options.ignoreDefaults) {
           result = setDefault(specFields[key], options)
