@@ -13,7 +13,7 @@
     "url": "git://github.com/3meters/scrub.git"
   },
   "dependencies": {
-    "tipe": "*",
+    "tipe": "*"
   },
   "devDependencies": {
     "jshint": "*",
