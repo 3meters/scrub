@@ -252,7 +252,7 @@ spec = {
 }
 val = {
   o1: {s1: 'foo', s2: 'bar'},
-  o2: {s1: 'foo', s2: 'bar', s3: 'baz}
+  o2: {s1: 'foo', s2: 'bar', s3: 'baz'}
 }
 err = scrub(val, spec, {strict: true}) // err is null because o2 strict attribute overrode option
 val.o2.o1 = {n2: 100}
